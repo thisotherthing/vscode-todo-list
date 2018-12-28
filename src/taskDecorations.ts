@@ -2,34 +2,10 @@ import * as vscode from 'vscode';
 
 const doneTaskDecorationType = vscode.window.createTextEditorDecorationType({
   opacity: "0.2",
-  // borderWidth: '1px',
-  // borderStyle: 'solid',
-  // overviewRulerColor: 'blue',
-  // overviewRulerLane: vscode.OverviewRulerLane.Right,
-  light: {
-    // this color will be used in light color themes
-    // borderColor: 'darkblue'
-  },
-  dark: {
-    // this color will be used in dark color themes
-    // borderColor: 'lightblue'
-  }
 });
 
 const projectNameDecorationType = vscode.window.createTextEditorDecorationType({
   fontWeight: "bold",
-  // borderWidth: '1px',
-  // borderStyle: 'solid',
-  // overviewRulerColor: 'blue',
-  // overviewRulerLane: vscode.OverviewRulerLane.Right,
-  light: {
-    // this color will be used in light color themes
-    // borderColor: 'darkblue'
-  },
-  dark: {
-    // this color will be used in dark color themes
-    // borderColor: 'lightblue'
-  }
 });
 
 export default function RunTaskDecorations(context: vscode.ExtensionContext) {
@@ -58,7 +34,7 @@ export default function RunTaskDecorations(context: vscode.ExtensionContext) {
     if (timeout) {
       clearTimeout(timeout);
     }
-    timeout = setTimeout(updateDecorations, 500);
+    timeout = setTimeout(updateDecorations, 250);
   }
   
   function updateDecorations() {
