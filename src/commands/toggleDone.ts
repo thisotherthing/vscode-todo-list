@@ -39,7 +39,6 @@ export default function SubscribeToggleDone(context: vscode.ExtensionContext) {
 			});
 
 			const linesToCheck = Object.keys(linesToCheckDictionary).map((valueString) => parseInt(valueString, 10));
-			console.log(linesToCheck);
 
 			editor.edit((edit) => {
 				linesToCheck.forEach((lineIndex: number) => {
@@ -58,7 +57,6 @@ export default function SubscribeToggleDone(context: vscode.ExtensionContext) {
 						else {
 							edit.replace(line.range, line.text.replace(/ +@done/g, ""));
 						}
-						console.log(line.text);
 					}
 				});
 			});
