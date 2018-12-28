@@ -1,4 +1,9 @@
 import * as vscode from 'vscode';
+import {
+	todoLanguageId,
+	projectRegEx,
+	doneTaskRegEx,
+} from "./config";
 
 const doneTaskDecorationType = vscode.window.createTextEditorDecorationType({
 	opacity: "0.2",
@@ -12,18 +17,14 @@ export default function RunTaskDecorations(context: vscode.ExtensionContext) {
 
 	let timeout : NodeJS.Timer | null = null;
 	
-	let activeEditor: vscode.TextEditor | undefined;
-
-	if (activeEditor !== undefined && activeEditor.document.languageId !== "todo") {
-		activeEditor = vscode.window.activeTextEditor;
-	}
+	let activeEditor: vscode.TextEditor | undefined = vscode.window.activeTextEditor;
 
 	if (activeEditor) {
 		triggerUpdateDecorations();
 	}
 	
 	vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor | undefined) => {
-		if (editor !== undefined && editor.document.languageId !== "todo") {
+		if (editor !== undefined && editor.document.languageId !== todoLanguageId) {
 			return;
 		}
 
@@ -50,11 +51,15 @@ export default function RunTaskDecorations(context: vscode.ExtensionContext) {
 		if (!activeEditor) {
 			return;
 		}
+
+		if (activeEditor !== undefined && activeEditor.document.languageId !== todoLanguageId) {
+			return;
+		}
+
 		const text = activeEditor.document.getText();
 
 		let match;
 
-		const doneTaskRegEx = /- .+@done/g;
 		const doneTaskDecorations: vscode.DecorationOptions[] = [];
 		while (match = doneTaskRegEx.exec(text)) {
 			const startPos = activeEditor.document.positionAt(match.index);
@@ -64,7 +69,6 @@ export default function RunTaskDecorations(context: vscode.ExtensionContext) {
 		}
 		activeEditor.setDecorations(doneTaskDecorationType, doneTaskDecorations);
 
-		const projectRegEx = /^[ \t]*[a-zA-z0-9]+:$/gm;
 		const projectDecorations: vscode.DecorationOptions[] = [];
 		while (match = projectRegEx.exec(text)) {
 			const startPos = activeEditor.document.positionAt(match.index);
