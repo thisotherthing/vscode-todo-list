@@ -43,6 +43,11 @@
         "command": "extension.toggleDone",
         "key": "Alt+d",
         "when": "editorTextFocus && editorLangId == todo"
+			},
+      {
+        "command": "extension.newLine",
+        "key": "Shift+Enter",
+        "when": "editorTextFocus && editorLangId == todo"
 			}
 		]
 	},
