@@ -48,6 +48,12 @@
         "command": "extension.newLine",
         "key": "Shift+Enter",
         "when": "editorTextFocus && editorLangId == todo"
+			},
+      {
+        "command": "extension.archiveDoneTasks",
+				"key": "Ctrl+Shift+a",
+				"mac": "Cmd+Shift+a",
+        "when": "editorTextFocus && editorLangId == todo"
 			}
 		]
 	},
