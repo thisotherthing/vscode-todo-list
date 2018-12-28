@@ -1,43 +1,52 @@
 import * as vscode from 'vscode';
 
 const doneTaskDecorationType = vscode.window.createTextEditorDecorationType({
-  opacity: "0.2",
+	opacity: "0.2",
 });
 
 const projectNameDecorationType = vscode.window.createTextEditorDecorationType({
-  fontWeight: "bold",
+	fontWeight: "bold",
 });
 
 export default function RunTaskDecorations(context: vscode.ExtensionContext) {
 
-  let timeout : NodeJS.Timer | null = null;
-  
-  let activeEditor = vscode.window.activeTextEditor;
-  if (activeEditor) {
-    triggerUpdateDecorations();
-  }
-  
-  vscode.window.onDidChangeActiveTextEditor(editor => {
-    activeEditor = editor;
-    if (editor) {
-      triggerUpdateDecorations();
-    }
-  }, null, context.subscriptions);
-  
-  vscode.workspace.onDidChangeTextDocument(event => {
-    if (activeEditor && event.document === activeEditor.document) {
-      triggerUpdateDecorations();
-    }
-  }, null, context.subscriptions);
+	let timeout : NodeJS.Timer | null = null;
+	
+	let activeEditor: vscode.TextEditor | undefined;
 
-  function triggerUpdateDecorations() {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(updateDecorations, 250);
-  }
-  
-  function updateDecorations() {
+	if (activeEditor !== undefined && activeEditor.document.languageId !== "todo") {
+		activeEditor = vscode.window.activeTextEditor;
+	}
+
+	if (activeEditor) {
+		triggerUpdateDecorations();
+	}
+	
+	vscode.window.onDidChangeActiveTextEditor((editor: vscode.TextEditor | undefined) => {
+		if (editor !== undefined && editor.document.languageId !== "todo") {
+			return;
+		}
+
+		activeEditor = editor;
+		if (editor) {
+			triggerUpdateDecorations();
+		}
+	}, null, context.subscriptions);
+	
+	vscode.workspace.onDidChangeTextDocument(event => {
+		if (activeEditor && event.document === activeEditor.document) {
+			triggerUpdateDecorations();
+		}
+	}, null, context.subscriptions);
+
+	function triggerUpdateDecorations() {
+		if (timeout) {
+			clearTimeout(timeout);
+		}
+		timeout = setTimeout(updateDecorations, 250);
+	}
+	
+	function updateDecorations() {
 		if (!activeEditor) {
 			return;
 		}

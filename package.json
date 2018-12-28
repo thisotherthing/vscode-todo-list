@@ -14,6 +14,24 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"languages": [
+			{
+				"id": "todo",
+				"aliases": [
+					"Todo",
+					"Todos"
+				],
+				"extensions": [
+					"TODO",
+					"todo",
+					"todo.txt",
+					"todo.md",
+					".todo",
+					".todos",
+					".taskpaper"
+				]
+			}
+		],
 		"commands": [
 			{
 				"command": "extension.helloWorld",
