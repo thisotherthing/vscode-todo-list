@@ -2,6 +2,7 @@ import {
   ExtensionContext,
   commands,
   window,
+  Position,
 } from "vscode";
 import {
   todoLanguageId,
@@ -55,7 +56,12 @@ export default function SubscribeToggleDone(context: ExtensionContext) {
           ) {
             if (line.text.match(doneTaskRegEx) === null) {
               // add @done
-              edit.replace(line.range, `${line.text.replace(/ +$/gm, "")} @done`);
+              const newLineText = `${line.text.replace(/ +$/gm, "")}`;
+              edit.replace(line.range, newLineText);
+              edit.insert(
+                new Position(lineIndex, newLineText.length),
+                " @done",
+              );
             } else {
               // remove @done
               edit.replace(line.range, line.text.replace(/ +@done/g, ""));
