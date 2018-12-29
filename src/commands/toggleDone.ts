@@ -3,6 +3,7 @@ import {
   commands,
   window,
   Position,
+  Range,
 } from "vscode";
 import {
   todoLanguageId,
@@ -55,9 +56,13 @@ export default function SubscribeToggleDone(context: ExtensionContext) {
             line.text.match(projectRegEx) === null
           ) {
             if (line.text.match(doneTaskRegEx) === null) {
-              // add @done
+              // remove trainig whitespace
               const newLineText = `${line.text.replace(/ +$/gm, "")}`;
-              edit.replace(line.range, newLineText);
+              edit.delete(new Range(
+                new Position(lineIndex, newLineText.length),
+                line.range.end,
+              ));
+              // add @done
               edit.insert(
                 new Position(lineIndex, newLineText.length),
                 " @done",
