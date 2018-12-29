@@ -2,10 +2,12 @@ import * as vscode from 'vscode';
 import {
 	todoLanguageId,
 	projectRegEx,
+	taskRegEx,
 } from "../config";
 
 import {
 	getEOLChar,
+	getIndentationString,
 	moveCursorToLineStart,
 } from "../utils";
 
@@ -47,10 +49,7 @@ export default function SubscribeNewLine(context: vscode.ExtensionContext) {
 				.map((valueString) => parseInt(valueString, 10))
 				.reverse();
 
-			const indentationString =
-				editor.options.insertSpaces ?
-				" ".repeat(editor.options.tabSize as any) : // since a getter is used for the options, this should always be a number
-				"\t";
+			const indentationString = getIndentationString(editor);
 
 			let moveCursor = false;
 
@@ -62,7 +61,7 @@ export default function SubscribeNewLine(context: vscode.ExtensionContext) {
 
 					const currentIndentationString = line.text.substring(0, line.firstNonWhitespaceCharacterIndex);
 
-					const itemStartMatch = line.text.match(/^ +- /);
+					const itemStartMatch = line.text.match(taskRegEx);
 
 					const newLineNeedsEOLBefore = lineIndex === editor.document.lineCount - 1;
 					console.log("newLineNeedsEOLBefore", newLineNeedsEOLBefore);
