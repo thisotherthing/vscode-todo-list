@@ -1,8 +1,6 @@
 # vscode todo list
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/thisotherthing/vscode-todo-list/master/icon/icon.png" width="128" alt="Logo">
-</p>
+![Logo](https://raw.githubusercontent.com/thisotherthing/vscode-todo-list/master/icon/icon.png)
 
 A simple extension, to work with taskpaper todo lists
 
@@ -10,10 +8,6 @@ A simple extension, to work with taskpaper todo lists
 - `Shift+Enter` add a new todo item
 - `Alt+d` toggle item done
 - `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project
-
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
 ## Requirements
 - create a file named `todo` or use the extensions `.todo`,`.todo`, `.todos` or `.taskpaper`
