@@ -1,65 +1,33 @@
-# vs-todo-list README
+# vscode todo list
 
-This is the README for your extension "vs-todo-list". After writing up a brief description, we recommend including the following sections.
+A simple extension, to work with taskpaper todo lists
 
-## Features
-
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
-
-For example if there is an image subfolder under your extension project workspace:
+## Hotkeys
+- `Shift+Enter` add a new todo item
+- `Alt+d` toggle item done
+- `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project
 
 \!\[feature X\]\(images/feature-x.png\)
 
 > Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
 ## Requirements
+- create a file named `todo` or use the extensions `.todo`,`.todo`, `.todos` or `.taskpaper`
+- start writing your todos, [TaskPaper Getting Started](https://guide.taskpaper.com/getting-started)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
-
-## Extension Settings
-
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: enable/disable this extension
-* `myExtension.thing`: set to `blah` to do something
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Example File
+```
+Project:
+	- create todo extension
+		- code
+		- update readme
+```
 
 ## Release Notes
-
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
+Initial release of vscode todo list
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
------------------------------------------------------------------------------------------------------------
-
-## Working with Markdown
-
-**Note:** You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+CMD+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux) or `Cmd+Space` (macOS) to see a list of Markdown snippets
-
-### For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## Inspiration
+https://guide.taskpaper.com/getting-started
+https://github.com/fabiospampinato/vscode-todo-plus
+https://github.com/fabiospampinato/vscode-markdown-todo
