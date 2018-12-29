@@ -4,6 +4,11 @@ import {
 	projectRegEx,
 } from "../config";
 
+import {
+	getEOLChar,
+	moveCursorToLineStart,
+} from "../utils";
+
 const addLineToCheck = (
 	lineIndex: number,
 	lines: {[key: number]: any},
@@ -49,23 +54,29 @@ export default function SubscribeNewLine(context: vscode.ExtensionContext) {
 
 			let moveCursor = false;
 
+			const eol = getEOLChar(editor.document);
+
 			editor.edit((edit) => {
 				linesToCheck.forEach((lineIndex: number) => {
 					const line = editor.document.lineAt(lineIndex);
 
 					const currentIndentationString = line.text.substring(0, line.firstNonWhitespaceCharacterIndex);
-					const eol = editor.document.getText(new vscode.Range(
-						line.range.end,
-						line.rangeIncludingLineBreak.end,
-					));
 
 					const itemStartMatch = line.text.match(/^ +- /);
+
+					const newLineNeedsEOLBefore = lineIndex === editor.document.lineCount - 1;
+					console.log("newLineNeedsEOLBefore", newLineNeedsEOLBefore);
 
 					// indent on project name line
 					if (line.text.match(projectRegEx) !== null) {
 						moveCursor = true;
 
-						const newLineString = `${currentIndentationString}${indentationString}- ${eol}`;
+						// if there is no eol, move cursor, so it isn't shifted by the inserted line
+						if (newLineNeedsEOLBefore) {
+							moveCursorToLineStart(editor);
+						}
+
+						const newLineString = `${newLineNeedsEOLBefore ? eol : ""}${currentIndentationString}${indentationString}- ${eol}`;
 
 						edit.insert(
 							new vscode.Position(lineIndex + 1, 0),
@@ -74,9 +85,14 @@ export default function SubscribeNewLine(context: vscode.ExtensionContext) {
 					} else if (itemStartMatch !== null) {
 						moveCursor = true;
 
+						// if there is no eol, move cursor, so it isn't shifted by the inserted line
+						if (newLineNeedsEOLBefore) {
+							moveCursorToLineStart(editor);
+						}
+
 						edit.insert(
 							new vscode.Position(lineIndex + 1, 0),
-							`${itemStartMatch[0]}${eol}`,
+							`${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${eol}`,
 						);
 					}
 				});
