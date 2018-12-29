@@ -13,7 +13,6 @@ A simple extension, to work with taskpaper todo lists
 
 ## Requirements
 - create a file named `todo` or use the extensions `.todo`,`.todo`, `.todos` or `.taskpaper`
-- start writing your todos, [TaskPaper Getting Started](https://guide.taskpaper.com/getting-started)
 
 ## Example File
 ```
@@ -28,6 +27,6 @@ Project:
 Initial release of vscode todo list
 
 ## Inspiration
-https://guide.taskpaper.com/getting-started
-https://github.com/fabiospampinato/vscode-todo-plus
-https://github.com/fabiospampinato/vscode-markdown-todo
+- https://guide.taskpaper.com/getting-started
+- https://github.com/fabiospampinato/vscode-todo-plus
+- https://github.com/fabiospampinato/vscode-markdown-todo
