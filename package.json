@@ -54,7 +54,7 @@
 			},
 			{
 				"command": "extension.newLine",
-				"key": "Shift+Enter",
+				"key": "Enter",
 				"when": "editorTextFocus && editorLangId == todo"
 			},
 			{

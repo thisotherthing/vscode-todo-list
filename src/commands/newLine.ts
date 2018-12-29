@@ -87,6 +87,9 @@ export default function SubscribeNewLine(context: ExtensionContext) {
               new Position(lineIndex + 1, 0),
               newLineString,
             );
+          } else if (line.text.match(/^[\t ]+- $/gm) !== null) {
+            // if there is just an empty task, remove it
+            edit.delete(line.range);
           } else if (itemStartMatch !== null) {
             moveCursor = true;
 
@@ -98,6 +101,18 @@ export default function SubscribeNewLine(context: ExtensionContext) {
             edit.insert(
               new Position(lineIndex + 1, 0),
               `${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${eol}`,
+            );
+          } else {
+            moveCursor = true;
+
+            // if there is no eol, move cursor, so it isn't shifted by the inserted line
+            if (newLineNeedsEOLBefore) {
+              moveCursorToLineStart(editor);
+            }
+
+            edit.insert(
+              new Position(lineIndex + 1, 0),
+              eol,
             );
           }
         });
