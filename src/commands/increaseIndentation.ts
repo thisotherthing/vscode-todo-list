@@ -1,4 +1,9 @@
-import * as vscode from "vscode";
+import {
+  ExtensionContext,
+  commands,
+  window,
+  Position,
+} from "vscode";
 import {
   todoLanguageId,
   projectRegEx,
@@ -10,11 +15,11 @@ import {
   getIndentationString,
 } from "../utils";
 
-export default function SubscribeIncreaseIndentation(context: vscode.ExtensionContext) {
+export default function SubscribeIncreaseIndentation(context: ExtensionContext) {
 
-  context.subscriptions.push(vscode.commands.registerCommand("extension.increaseIndentation", () => {
+  context.subscriptions.push(commands.registerCommand("extension.increaseIndentation", () => {
 
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
 
     if (editor && editor.document.languageId === todoLanguageId) {
 
@@ -34,7 +39,7 @@ export default function SubscribeIncreaseIndentation(context: vscode.ExtensionCo
             )
           ) {
             edit.insert(
-              new vscode.Position(lineIndex, 0),
+              new Position(lineIndex, 0),
               indentationString,
             );
           }
