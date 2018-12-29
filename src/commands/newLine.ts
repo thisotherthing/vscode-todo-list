@@ -1,110 +1,117 @@
-import * as vscode from 'vscode';
 import {
-	todoLanguageId,
-	projectRegEx,
-	taskRegEx,
+  commands,
+  window,
+  ExtensionContext,
+  Position,
+  Selection,
+} from "vscode";
+import {
+  todoLanguageId,
+  projectRegEx,
+  taskRegEx,
 } from "../config";
 
 import {
-	getEOLChar,
-	getIndentationString,
-	moveCursorToLineStart,
+  getEOLChar,
+  getIndentationString,
+  moveCursorToLineStart,
 } from "../utils";
 
 const addLineToCheck = (
-	lineIndex: number,
-	lines: {[key: number]: any},
+  lineIndex: number,
+  lines: {[key: number]: any},
 ) => {
-	if (lines[lineIndex] === undefined) {
-		lines[lineIndex] = 0;
-	}
+  if (lines[lineIndex] === undefined) {
+    lines[lineIndex] = 0;
+  }
 };
 
 const addLines = (
-	start: number,
-	end: number,
-	lines: {[key: number]: any},
+  start: number,
+  end: number,
+  lines: {[key: number]: any},
 ) => {
-	for (let i = start; i <= end; i++) {
-		addLineToCheck(i, lines);
-	}
+  for (let i = start; i <= end; i++) {
+    addLineToCheck(i, lines);
+  }
 };
 
-export default function SubscribeNewLine(context: vscode.ExtensionContext) {
+export default function SubscribeNewLine(context: ExtensionContext) {
 
-	context.subscriptions.push(vscode.commands.registerCommand('extension.newLine', () => {
+  context.subscriptions.push(commands.registerCommand("extension.newLine", () => {
 
-		const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
 
-		if (editor && editor.document.languageId === todoLanguageId) {
+    if (editor && editor.document.languageId === todoLanguageId) {
 
-			const linesToCheckDictionary = {};
+      const linesToCheckDictionary = {};
 
-			editor.selections.forEach((selection) => {
-				addLines(selection.start.line, selection.end.line, linesToCheckDictionary);
-			});
+      editor.selections.forEach((selection) => {
+        addLines(selection.start.line, selection.end.line, linesToCheckDictionary);
+      });
 
-			const linesToCheck =
-				Object.keys(linesToCheckDictionary)
-				.map((valueString) => parseInt(valueString, 10))
-				.reverse();
+      const linesToCheck =
+        Object.keys(linesToCheckDictionary)
+        .map((valueString) => parseInt(valueString, 10))
+        .reverse();
 
-			const indentationString = getIndentationString(editor);
+      const indentationString = getIndentationString(editor);
 
-			let moveCursor = false;
+      let moveCursor = false;
 
-			const eol = getEOLChar(editor.document);
+      const eol = getEOLChar(editor.document);
 
-			editor.edit((edit) => {
-				linesToCheck.forEach((lineIndex: number) => {
-					const line = editor.document.lineAt(lineIndex);
+      editor.edit((edit) => {
+        linesToCheck.forEach((lineIndex: number) => {
+          const line = editor.document.lineAt(lineIndex);
 
-					const currentIndentationString = line.text.substring(0, line.firstNonWhitespaceCharacterIndex);
+          const currentIndentationString = line.text.substring(0, line.firstNonWhitespaceCharacterIndex);
 
-					const itemStartMatch = line.text.match(taskRegEx);
+          const itemStartMatch = line.text.match(taskRegEx);
 
-					const newLineNeedsEOLBefore = lineIndex === editor.document.lineCount - 1;
+          const newLineNeedsEOLBefore = lineIndex === editor.document.lineCount - 1;
 
-					// indent on project name line
-					if (line.text.match(projectRegEx) !== null) {
-						moveCursor = true;
+          // indent on project name line
+          if (line.text.match(projectRegEx) !== null) {
+            moveCursor = true;
 
-						// if there is no eol, move cursor, so it isn't shifted by the inserted line
-						if (newLineNeedsEOLBefore) {
-							moveCursorToLineStart(editor);
-						}
+            // if there is no eol, move cursor, so it isn't shifted by the inserted line
+            if (newLineNeedsEOLBefore) {
+              moveCursorToLineStart(editor);
+            }
 
-						const newLineString = `${newLineNeedsEOLBefore ? eol : ""}${currentIndentationString}${indentationString}- ${eol}`;
+            const newLineString =
+              `${newLineNeedsEOLBefore ? eol : ""}${currentIndentationString}${indentationString}- ${eol}`;
 
-						edit.insert(
-							new vscode.Position(lineIndex + 1, 0),
-							newLineString,
-						);
-					} else if (itemStartMatch !== null) {
-						moveCursor = true;
+            edit.insert(
+              new Position(lineIndex + 1, 0),
+              newLineString,
+            );
+          } else if (itemStartMatch !== null) {
+            moveCursor = true;
 
-						// if there is no eol, move cursor, so it isn't shifted by the inserted line
-						if (newLineNeedsEOLBefore) {
-							moveCursorToLineStart(editor);
-						}
+            // if there is no eol, move cursor, so it isn't shifted by the inserted line
+            if (newLineNeedsEOLBefore) {
+              moveCursorToLineStart(editor);
+            }
 
-						edit.insert(
-							new vscode.Position(lineIndex + 1, 0),
-							`${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${eol}`,
-						);
-					}
-				});
-			}).then(() => {
-				// after inserts are finished, move cursor to new line
-				if (moveCursor) {
-					const newCursorPosition = new vscode.Position(
-						editor.selection.end.line + 1,
-						editor.document.lineAt(editor.selection.end.line).text.length,
-					);
-					var newSelection = new vscode.Selection(newCursorPosition, newCursorPosition);
-					editor.selection = newSelection;
-				}
-			});
-		}
-	}));
+            edit.insert(
+              new Position(lineIndex + 1, 0),
+              `${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${eol}`,
+            );
+          }
+        });
+      }).then(() => {
+        // after inserts are finished, move cursor to new line
+        if (moveCursor) {
+          const newCursorPosition = new Position(
+            editor.selection.end.line + 1,
+            editor.document.lineAt(editor.selection.end.line).text.length,
+          );
+          const newSelection = new Selection(newCursorPosition, newCursorPosition);
+          editor.selection = newSelection;
+        }
+      });
+    }
+  }));
 }
