@@ -39,21 +39,26 @@
 			}
 		],
 		"keybindings": [
-      {
-        "command": "extension.toggleDone",
-        "key": "Alt+d",
-        "when": "editorTextFocus && editorLangId == todo"
+			{
+				"command": "extension.toggleDone",
+				"key": "Alt+d",
+				"when": "editorTextFocus && editorLangId == todo"
 			},
-      {
-        "command": "extension.newLine",
-        "key": "Shift+Enter",
-        "when": "editorTextFocus && editorLangId == todo"
+			{
+				"command": "extension.newLine",
+				"key": "Shift+Enter",
+				"when": "editorTextFocus && editorLangId == todo"
 			},
-      {
-        "command": "extension.archiveDoneTasks",
+			{
+				"command": "extension.increaseIndentation",
+				"key": "Tab",
+				"when": "editorTextFocus && editorLangId == todo"
+			},
+			{
+				"command": "extension.archiveDoneTasks",
 				"key": "Ctrl+Shift+a",
 				"mac": "Cmd+Shift+a",
-        "when": "editorTextFocus && editorLangId == todo"
+				"when": "editorTextFocus && editorLangId == todo"
 			}
 		]
 	},
