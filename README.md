@@ -1,5 +1,9 @@
 # vscode todo list
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/thisotherthing/vscode-todo-list/master/icon/icon.png" width="128" alt="Logo">
+</p>
+
 A simple extension, to work with taskpaper todo lists
 
 ## Hotkeys
