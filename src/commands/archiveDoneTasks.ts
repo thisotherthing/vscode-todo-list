@@ -1,4 +1,12 @@
-import * as vscode from "vscode";
+import {
+  TextLine,
+  Position,
+  TextDocument,
+  TextEditorEdit,
+  ExtensionContext,
+  commands,
+  window,
+} from "vscode";
 import {
   todoLanguageId,
   doneTaskRegEx,
@@ -7,10 +15,10 @@ import {
 import {getEOLCharFromLine} from "../utils";
 
 const moveArchiveLines = (
-  linesToMove: vscode.TextLine[],
-  lineInsertPosition: vscode.Position,
-  document: vscode.TextDocument,
-  edit: vscode.TextEditorEdit,
+  linesToMove: TextLine[],
+  lineInsertPosition: Position,
+  document: TextDocument,
+  edit: TextEditorEdit,
 ) => {
   linesToMove.forEach((doneTaskLine) => {
     const eol = getEOLCharFromLine(doneTaskLine, document);
@@ -29,8 +37,8 @@ const moveArchiveLines = (
 };
 
 const addMissingArchiveProjectToEnd = (
-  document: vscode.TextDocument,
-  edit: vscode.TextEditorEdit,
+  document: TextDocument,
+  edit: TextEditorEdit,
 ) => {
   const lastLine = document.lineAt(document.lineCount - 1);
   const eol = getEOLCharFromLine(
@@ -49,16 +57,16 @@ const addMissingArchiveProjectToEnd = (
   );
 };
 
-export default function SubscribeArchiveDoneTasks(context: vscode.ExtensionContext) {
+export default function SubscribeArchiveDoneTasks(context: ExtensionContext) {
 
-  context.subscriptions.push(vscode.commands.registerCommand("extension.archiveDoneTasks", () => {
+  context.subscriptions.push(commands.registerCommand("extension.archiveDoneTasks", () => {
 
-    const editor = vscode.window.activeTextEditor;
+    const editor = window.activeTextEditor;
 
     if (editor && editor.document.languageId === todoLanguageId) {
 
-      const linesToMove: vscode.TextLine[] = [];
-      let foundArchiveProject = false;
+      const linesToMove: TextLine[] = [];
+      let foundArchiveLine: TextLine;
 
       editor.edit((edit) => {
         // edit.replace(line.range, line.text.replace(/ +@done/g, ""));
@@ -76,27 +84,27 @@ export default function SubscribeArchiveDoneTasks(context: vscode.ExtensionConte
             !line.isEmptyOrWhitespace &&
             line.text.match(/[aA]rchive:/g) !== null
           ) {
-            foundArchiveProject = true;
-
-            moveArchiveLines(
-              linesToMove,
-              new vscode.Position(line.range.end.line + 1, 0),
-              editor.document,
-              edit,
-            );
+            foundArchiveLine = line;
 
             break;
           }
         }
 
-        if (!foundArchiveProject) {
+        if (foundArchiveLine === undefined) {
           addMissingArchiveProjectToEnd(editor.document, edit);
 
           // and add done tasks to new archive project
           const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
           moveArchiveLines(
             linesToMove,
-            new vscode.Position(lastLine.range.end.line + 1, 0),
+            new Position(lastLine.range.end.line + 1, 0),
+            editor.document,
+            edit,
+          );
+        } else {
+          moveArchiveLines(
+            linesToMove,
+            new Position(foundArchiveLine.range.end.line + 1, 0),
             editor.document,
             edit,
           );
