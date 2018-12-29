@@ -1,6 +1,6 @@
 {
 	"name": "vscode-todo-list",
-	"displayName": "vs-todo-list",
+	"displayName": "Todo List",
 	"description": "a simple taskpaper utility",
 	"version": "0.0.1",
 	"engines": {
@@ -18,7 +18,7 @@
 		"email": "stefan@thisotherthing.co"
 },
 	"activationEvents": [
-		"*"
+		"onLanguage:todo"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
