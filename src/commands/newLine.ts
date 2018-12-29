@@ -64,7 +64,6 @@ export default function SubscribeNewLine(context: vscode.ExtensionContext) {
 					const itemStartMatch = line.text.match(taskRegEx);
 
 					const newLineNeedsEOLBefore = lineIndex === editor.document.lineCount - 1;
-					console.log("newLineNeedsEOLBefore", newLineNeedsEOLBefore);
 
 					// indent on project name line
 					if (line.text.match(projectRegEx) !== null) {
