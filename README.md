@@ -16,12 +16,15 @@ A simple extension, to work with taskpaper todo lists
 ## Example File
 ```
 Project:
-	- create todo extension
-		- code
-		- record gifs
-		- update readme
-	- publish extension
+  - create todo extension
+    - code
+    - record gifs
+    - update readme
+  - publish extension
 ```
+
+### Video
+![Video](https://raw.githubusercontent.com/thisotherthing/vscode-todo-list/master/store-assets/recording.gif)
 
 ## Inspiration
 - https://guide.taskpaper.com/getting-started
