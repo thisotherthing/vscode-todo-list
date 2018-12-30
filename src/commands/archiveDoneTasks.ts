@@ -18,7 +18,6 @@ import {
 } from "../utils";
 
 import {
-  ITreeData,
   getItemTree,
 } from "../itemTreeParser";
 

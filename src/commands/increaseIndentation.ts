@@ -6,8 +6,6 @@ import {
 } from "vscode";
 import {
   todoLanguageId,
-  projectRegEx,
-  taskRegEx,
 } from "../config";
 
 import {
