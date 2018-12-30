@@ -49,7 +49,8 @@
 		"keybindings": [
 			{
 				"command": "extension.toggleDone",
-				"key": "Alt+d",
+				"key": "Ctrl+d",
+				"mac": "Cmd+d",
 				"when": "editorTextFocus && editorLangId == todo"
 			},
 			{
