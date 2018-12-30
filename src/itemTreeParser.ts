@@ -15,6 +15,7 @@ import {
 
 export interface ITodoItem {
   line?: TextLine;
+  lineIndex: number;
   projectName?: string;
   isDone: boolean;
   parent?: ITodoItem;
@@ -36,7 +37,7 @@ const resursiveAddItem = (
   depth: number,
   stringbuilder: string[],
   substringBuilder: string[],
-  debug?: boolean,
+  debug: boolean,
 ) => {
   substringBuilder.length = 0;
 
@@ -61,7 +62,11 @@ const resursiveAddItem = (
     debug === true &&
     item.isDone
   ) {
-    substringBuilder.push(`(${item.isDone})`);
+    substringBuilder.push(`(done)`);
+  }
+
+  if (debug && item.archivable === true) {
+    substringBuilder.push(`(archivable)`);
   }
 
   if (debug === true) {
@@ -76,12 +81,14 @@ const resursiveAddItem = (
       depth + 1,
       stringbuilder,
       substringBuilder,
+      debug,
     );
   });
 };
 
 export function getNestedString(
   rootItem: ITodoItem,
+  debug?: boolean,
 ): string {
   const stringbuilder: string[] = [];
   const substringBuilder: string[] = [];
@@ -91,16 +98,65 @@ export function getNestedString(
     -1,
     stringbuilder,
     substringBuilder,
+    debug === true,
   );
 
   return stringbuilder.join("\n");
 }
+
+const areChildrenArchivable = (item: ITodoItem): boolean => {
+
+  const isTodoItem = item.projectName === undefined;
+
+  // stop at archive
+  if (
+    item.projectName !== undefined &&
+    (
+      item.projectName === "Archive:" ||
+      item.projectName === "archive:"
+    )
+  ) {
+    return false;
+  }
+
+  if (!item.isDone && isTodoItem) {
+    item.archivable = false;
+    return false;
+  }
+
+  for (let i = 0, l = item.children.length; i < l; i++) {
+    const child = item.children[i];
+
+    if (
+      child.line !== undefined &&
+      !child.line.isEmptyOrWhitespace &&
+      !areChildrenArchivable(item.children[i])
+    ) {
+      item.archivable = false;
+
+      if (isTodoItem) {
+        return false;
+      }
+    }
+  }
+
+  if (isTodoItem) {
+    item.archivable = true;
+  }
+
+  return true;
+};
+
+const setArchivable = (item: ITodoItem) => {
+  areChildrenArchivable(item);
+};
 
 export function getItemTree(
   editor: TextEditor,
 ): ITreeData {
   const root: ITodoItem = {
     projectName: "root",
+    lineIndex: -1,
     isDone: false,
     archivable: false,
     children: [],
@@ -137,6 +193,7 @@ export function getItemTree(
 
     const item: ITodoItem = {
       line: currentLine,
+      lineIndex: currentLine.lineNumber,
       projectName: isProject ? currentLine.text.trim() : undefined,
       isDone: !isProject && currentLine.text.match(doneTaskRegEx) !== null,
       parent: currentParent,
@@ -183,8 +240,10 @@ export function getItemTree(
     }
   }
 
+  setArchivable(root);
+
   // console.log(root);
-  // getNestedString(root);
+  // console.log(getNestedString(root, true));
 
   return {
     root,
