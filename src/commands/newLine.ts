@@ -4,6 +4,7 @@ import {
   ExtensionContext,
   Position,
   Selection,
+  Range,
 } from "vscode";
 import {
   todoLanguageId,
@@ -93,15 +94,41 @@ export default function SubscribeNewLine(context: ExtensionContext) {
           } else if (itemStartMatch !== null) {
             moveCursor = true;
 
-            // if there is no eol, move cursor, so it isn't shifted by the inserted line
-            if (newLineNeedsEOLBefore) {
-              moveCursorToLineStart(editor);
-            }
+            let insetLineBelow = true;
 
-            edit.insert(
-              new Position(lineIndex + 1, 0),
-              `${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${eol}`,
-            );
+            // if cursor isn't at end, split line into two tasks
+            let textAfterCursor = "";
+            const lineSelection = editor.selections.filter((selection) => selection.start.line === lineIndex);
+
+            if (lineSelection.length > 0) {
+              const cursorCharacterIndex = lineSelection[0].start.character;
+
+              // check if cursor is before `-`, then insert empty line before
+              if (line.text.indexOf("-") >= cursorCharacterIndex) {
+                edit.insert(
+                  new Position(lineIndex, 0),
+                  eol,
+                );
+                insetLineBelow = false;
+                moveCursor = false;
+              } else {
+                textAfterCursor = line.text.substr(cursorCharacterIndex);
+                edit.delete(new Range(
+                  new Position(lineIndex, cursorCharacterIndex),
+                  new Position(lineIndex, line.range.end.character),
+                ));
+
+                // if there is no eol, move cursor, so it isn't shifted by the inserted line
+                if (newLineNeedsEOLBefore) {
+                  moveCursorToLineStart(editor);
+                }
+
+                edit.insert(
+                  new Position(lineIndex + 1, 0),
+                  `${newLineNeedsEOLBefore ? eol : ""}${itemStartMatch[0]}${textAfterCursor.trimLeft()}${eol}`,
+                );
+              }
+            }
           } else {
             moveCursor = true;
 
