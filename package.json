@@ -2,7 +2,8 @@
 	"name": "vscode-todo-list",
 	"displayName": "Todo List",
 	"description": "a simple taskpaper utility",
-	"version": "0.0.1",
+	"version": "1.0.0",
+	"publisher": "thisotherthing",
 	"engines": {
 		"vscode": "^1.30.0"
 	},
