@@ -23,7 +23,7 @@ Project:
   - publish extension
 ```
 
-### Video
+## Video
 ![Video](https://raw.githubusercontent.com/thisotherthing/vscode-todo-list/master/store-assets/recording.gif)
 
 ## Inspiration
