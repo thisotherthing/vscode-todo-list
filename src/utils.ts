@@ -5,17 +5,21 @@ import {
   Range,
   Position,
   Selection,
+  EndOfLine,
 } from "vscode";
 
 export function getEOLChar(
   document: TextDocument,
 ): string {
-  const line = document.lineAt(0);
 
-  return document.getText(new Range(
-    line.range.end,
-    line.rangeIncludingLineBreak.end,
-  ));
+  switch (document.eol) {
+    case EndOfLine.LF:
+      return `\n`;
+    case EndOfLine.CRLF:
+      return `\r\n`;
+    default:
+      return `\n`;
+  }
 }
 
 export function getEOLCharFromLine(
