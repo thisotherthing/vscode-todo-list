@@ -94,8 +94,6 @@ export default function SubscribeNewLine(context: ExtensionContext) {
           } else if (itemStartMatch !== null) {
             moveCursor = true;
 
-            let insetLineBelow = true;
-
             // if cursor isn't at end, split line into two tasks
             let textAfterCursor = "";
             const lineSelection = editor.selections.filter((selection) => selection.start.line === lineIndex);
@@ -109,7 +107,6 @@ export default function SubscribeNewLine(context: ExtensionContext) {
                   new Position(lineIndex, 0),
                   eol,
                 );
-                insetLineBelow = false;
                 moveCursor = false;
               } else {
                 textAfterCursor = line.text.substr(cursorCharacterIndex);
