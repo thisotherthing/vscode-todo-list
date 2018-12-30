@@ -28,21 +28,10 @@ export default function SubscribeIncreaseIndentation(context: ExtensionContext) 
 
       editor.edit((edit) => {
         linesToCheck.forEach((lineIndex: number) => {
-          const line = editor.document.lineAt(lineIndex);
-
-          if (
-            !line.isEmptyOrWhitespace &&
-            line.text.length > 2 &&
-            (
-              line.text.match(projectRegEx) !== null ||
-              line.text.match(taskRegEx) !== null
-            )
-          ) {
-            edit.insert(
-              new Position(lineIndex, 0),
-              indentationString,
-            );
-          }
+          edit.insert(
+            new Position(lineIndex, 0),
+            indentationString,
+          );
         });
       });
     }
