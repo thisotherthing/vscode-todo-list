@@ -18,7 +18,8 @@ import {
 } from "../utils";
 
 import {
-	getItemTree,
+  ITreeData,
+  getItemTree,
 } from "../itemTreeParser";
 
 const moveArchiveLines = (
@@ -64,15 +65,82 @@ const addMissingArchiveProjectToEnd = (
   );
 };
 
-const filterArchiveLinesForOpenNestedTasks = (
+const filterLinesToArchive = (
   linesToMove: TextLine[],
   editor: TextEditor,
 ): TextLine[] => {
-  const filteredLines: TextLine[] = [];
-
   const itemTree = getItemTree(editor);
 
+  const filteredLines = linesToMove.filter((line) => checkIfLineCanBeArchived(
+    line.lineNumber,
+    itemTree,
+  ));
+
   return filteredLines;
+};
+
+const checkIfLineCanBeArchived = (
+  lineIndex: number,
+  treeData: ITreeData,
+): boolean => {
+  const todoItem = treeData.lineMap[lineIndex];
+
+  // console.log(lineIndex, treeData.lineMap[lineIndex].line);
+
+  if (
+    !todoItem.isDone || // stop if task isn't done
+    todoItem.archivable === false || // was already determinded to not be archivable
+    todoItem.projectName !== undefined // is a project
+  ) {
+    // console.log("0");
+    todoItem.archivable = false;
+    return false;
+  }
+
+  // stop if parent is unfinished task
+  if (
+    todoItem.parent !== undefined &&
+    todoItem.parent.projectName === undefined &&
+    !todoItem.parent.isDone
+  ) {
+    // console.log("1");
+    todoItem.archivable = false;
+    return false;
+  }
+
+  // stop if there are undone children
+  if (todoItem.children.length > 0) {
+    for (let i = 0, l = todoItem.children.length; i < l; i++) {
+      if (
+        !todoItem.children[i].isDone ||
+        todoItem.children[i].archivable === false
+      ) {
+        todoItem.archivable = false;
+        // console.log("2");
+        return false;
+      }
+    }
+  }
+
+  // if parent isn't project and there are undone siblings
+  if (
+    todoItem.parent !== undefined &&
+    todoItem.parent.projectName === undefined &&
+    todoItem.parent.children.length > 1
+  ) {
+    for (let i = 0, l = todoItem.parent.children.length; i < l; i++) {
+      if (
+        !todoItem.parent.children[i].isDone ||
+        todoItem.parent.children[i].archivable === false
+      ) {
+        // console.log("3");
+        todoItem.archivable = false;
+        return false;
+      }
+    }
+  }
+
+  return true;
 };
 
 export default function SubscribeArchiveDoneTasks(context: ExtensionContext) {
@@ -108,7 +176,7 @@ export default function SubscribeArchiveDoneTasks(context: ExtensionContext) {
           }
         }
 
-        const filteredLinesToMove = filterArchiveLinesForOpenNestedTasks(
+        const filteredLinesToMove = filterLinesToArchive(
           linesToMove,
           editor,
         );

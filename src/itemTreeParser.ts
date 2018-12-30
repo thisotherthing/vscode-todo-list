@@ -19,6 +19,16 @@ export interface ITodoItem {
   isDone: boolean;
   parent?: ITodoItem;
   children: ITodoItem[];
+  archivable?: boolean;
+}
+
+export interface ITodoItemMap {
+  [key: number]: ITodoItem;
+}
+
+export interface ITreeData {
+  root: ITodoItem;
+  lineMap: ITodoItemMap;
 }
 
 const resursiveAddItem = (
@@ -88,15 +98,14 @@ export function getNestedString(
 
 export function getItemTree(
   editor: TextEditor,
-): ITodoItem {
+): ITreeData {
   const root: ITodoItem = {
     projectName: "root",
     isDone: false,
+    archivable: false,
     children: [],
   };
-  const todoItemMap: {
-    [key: number]: ITodoItem,
-  } = {};
+  const todoItemMap: ITodoItemMap = {};
 
   const indentationString = getIndentationString(editor);
   const indentationStringLength = indentationString.length;
@@ -124,6 +133,7 @@ export function getItemTree(
     // console.log(currentLine.text);
 
     const isProject = currentLine.text.match(projectRegEx) !== null;
+    const isDone = currentLine.text.match(doneTaskRegEx) !== null;
 
     const item: ITodoItem = {
       line: currentLine,
@@ -132,6 +142,10 @@ export function getItemTree(
       parent: currentParent,
       children: [],
     };
+
+    if (isProject || !isDone) {
+      item.archivable = false;
+    }
 
     todoItemMap[currentLine.lineNumber] = item;
 
@@ -172,5 +186,8 @@ export function getItemTree(
   // console.log(root);
   // getNestedString(root);
 
-  return root;
-};
+  return {
+    root,
+    lineMap: todoItemMap,
+  };
+}
