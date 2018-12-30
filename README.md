@@ -5,9 +5,10 @@
 A simple extension, to work with taskpaper todo lists
 
 ## Hotkeys
-- `Shift+Enter` add a new todo item
-- `Alt+d` toggle item done
-- `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project
+- `Enter` add a new todo item at same indentation (or split it at the cursor)
+- `Tab` increase indentation (from anywhere in the line)
+- `Ctrl+d`/`Cmd+d` toggle item done
+- `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project (nested task need to be fully done)
 
 ## Requirements
 - create a file named `todo` or use the extensions `.todo`,`.todo`, `.todos` or `.taskpaper`
@@ -19,10 +20,6 @@ Project:
 		- code
 		- update readme
 ```
-
-## Release Notes
-### 1.0.0
-Initial release of vscode todo list
 
 ## Inspiration
 - https://guide.taskpaper.com/getting-started
