@@ -8,7 +8,7 @@ A simple extension, to work with taskpaper todo lists
 - `Enter` add a new todo item at same indentation (or split it at the cursor)
 - `Tab` increase indentation (from anywhere in the line)
 - `Ctrl+d`/`Cmd+d` toggle item done
-- `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project (nested task need to be fully done)
+- `Ctrl+Shift+a`/`Cmd+Shift+a` move done items into Archive project (repects nested tasks)
 
 ## Requirements
 - create a file named `todo` or use the extensions `.todo`,`.todo`, `.todos` or `.taskpaper`
@@ -18,7 +18,9 @@ A simple extension, to work with taskpaper todo lists
 Project:
 	- create todo extension
 		- code
+		- record gifs
 		- update readme
+	- publish extension
 ```
 
 ## Inspiration
