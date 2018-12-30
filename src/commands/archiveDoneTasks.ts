@@ -6,13 +6,20 @@ import {
   ExtensionContext,
   commands,
   window,
+  TextEditor,
 } from "vscode";
 import {
   todoLanguageId,
   doneTaskRegEx,
 } from "../config";
 
-import {getEOLCharFromLine} from "../utils";
+import {
+  getEOLCharFromLine,
+} from "../utils";
+
+import {
+	getItemTree,
+} from "../itemTreeParser";
 
 const moveArchiveLines = (
   linesToMove: TextLine[],
@@ -57,6 +64,17 @@ const addMissingArchiveProjectToEnd = (
   );
 };
 
+const filterArchiveLinesForOpenNestedTasks = (
+  linesToMove: TextLine[],
+  editor: TextEditor,
+): TextLine[] => {
+  const filteredLines: TextLine[] = [];
+
+  const itemTree = getItemTree(editor);
+
+  return filteredLines;
+};
+
 export default function SubscribeArchiveDoneTasks(context: ExtensionContext) {
 
   context.subscriptions.push(commands.registerCommand("extension.archiveDoneTasks", () => {
@@ -90,20 +108,25 @@ export default function SubscribeArchiveDoneTasks(context: ExtensionContext) {
           }
         }
 
+        const filteredLinesToMove = filterArchiveLinesForOpenNestedTasks(
+          linesToMove,
+          editor,
+        );
+
         if (foundArchiveLine === undefined) {
           addMissingArchiveProjectToEnd(editor.document, edit);
 
           // and add done tasks to new archive project
           const lastLine = editor.document.lineAt(editor.document.lineCount - 1);
           moveArchiveLines(
-            linesToMove,
+            filteredLinesToMove,
             new Position(lastLine.range.end.line + 1, 0),
             editor.document,
             edit,
           );
         } else {
           moveArchiveLines(
-            linesToMove,
+            filteredLinesToMove,
             new Position(foundArchiveLine.range.end.line + 1, 0),
             editor.document,
             edit,

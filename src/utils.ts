@@ -78,3 +78,11 @@ export function getSelectedLineIndices(
   return Object.keys(linesToCheckDictionary).map(	(valueString) => parseInt(valueString, 10),
   );
 }
+
+// https://stackoverflow.com/a/24398129
+export function leftPad(
+  pad: string,
+  str: string,
+) {
+  return (pad + str).slice(-pad.length);
+}
